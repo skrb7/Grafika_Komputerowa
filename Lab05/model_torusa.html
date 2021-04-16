@@ -130,38 +130,37 @@ function startGL()
   
   //Opis sceny 3D, położenie punktów w przestrzeni 3D w formacie X,Y,Z 
   let vertexPosition = []; //3 punkty po 3 składowe - X1,Y1,Z1, X2,Y2,Z2, X3,Y3,Z3 - 1 trójkąt
+  let stepElevation = 360/12;
   
-  let stepElevation = 90/12;
+  let stepPhi = 360/120;
   let stepAngle = 360/12;
-  let radius = 0.5;
-  let R = 1.0;
 
-  for(let phi = 0; phi < 360; phi++)
+  let radius = 3.0;
+  let R = 5;
+
+  for(let phi=0; phi < 360; phi+=stepPhi)
   {
-    for(let angle = 0; angle < 360; angle += stepAngle)
+    for(let angle = 0; angle < 360; angle+= stepAngle)
     {
-      let px1 = (R + radius*Math.cos(angle*Math.PI/180)) * Math.cos(phi*Math.PI/180);
-      let py1 = (R + radius*Math.cos(angle*Math.PI/180)) * Math.sin(phi*Math.PI/180);
-      let pz1 = radius * Math.sin(angle*Math.PI/180);
-      
-      let px2 = (R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.cos(phi*Math.PI/180);
-      let py2 = (R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.sin(phi*Math.PI/180);
-      let pz2 = radius * Math.sin((angle+stepAngle)*Math.PI/180);
-      
-      let px3 = (R + radius*Math.cos(angle*Math.PI/180)) * Math.cos(phi*Math.PI/180);
-      let py3 = (R + radius*Math.cos(angle*Math.PI/180)) * Math.sin(phi*Math.PI/180);
-      let pz3 = radius * Math.sin(angle*Math.PI/180);
-      
-      let px4 = (R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.cos(phi*Math.PI/180);
-      let py4 = (R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.sin(phi*Math.PI/180);
-      let pz4 = radius * Math.sin((angle+stepAngle)*Math.PI/180);
-      
-      vertexPosition.push(...createRect2(px1,py1,pz1,px2,py2,pz2,px3,py3,pz3,px4,py4,pz4)); // Ściana XZ
+    let px1 =(R + radius * Math.cos(angle*Math.PI/180)) * Math.cos(phi*Math.PI/180);
+    let py1 =(R + radius * Math.cos(angle*Math.PI/180)) * Math.sin(phi*Math.PI/180);
+    let pz1 = radius * Math.sin(angle*Math.PI/180);
+    
+    let px2 =(R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.cos((phi+stepPhi)*Math.PI/180);
+    let py2 =(R + radius*Math.cos((angle+stepAngle)*Math.PI/180)) * Math.sin((phi+stepPhi)*Math.PI/180);
+    let pz2 = radius * Math.sin((angle+stepAngle)*Math.PI/180);
+    
+    let px3 =(R + radius * Math.cos(angle*Math.PI/180)) * Math.cos(phi*Math.PI/180);
+    let py3 =(R + radius * Math.cos(angle*Math.PI/180)) * Math.sin(phi*Math.PI/180);
+    let pz3 = -radius * Math.sin(angle*Math.PI/180);
+    
+    let px4 =(R + radius * Math.cos((angle+stepAngle)*Math.PI/180)) * Math.cos((phi+stepPhi)*Math.PI/180);
+    let py4 =(R + radius * Math.cos((angle+stepAngle)*Math.PI/180)) * Math.sin((phi+stepPhi)*Math.PI/180);
+    let pz4 = -radius * Math.sin((angle+stepAngle)*Math.PI/180);
+
+    vertexPosition.push(...createRect2(px1,py1,pz1,px2,py2,pz2,px3,py3,pz3,px4,py4,pz4)); // Ściana XZ
     }
   }
-  
-
-
 
   vertexPositionBuffer = gl.createBuffer(); //Stworzenie tablicy w pamieci karty graficznej
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
@@ -172,7 +171,7 @@ function startGL()
   //Opis sceny 3D, kolor każdego z wierzchołków
   let vertexColor = []; //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
   
-  for(let elevation=-90; elevation< 90; elevation+= stepElevation)
+  for(let phi=0; phi < 360; phi+=stepPhi)
   {
     for(let angle = 0; angle < 360; angle+= stepAngle)
     {
@@ -188,11 +187,11 @@ function startGL()
   
   let vertexCoords = []; //3 punkty po 2 składowe - U1,V1, U2,V2, U3,V3 - 1 trójkąt
   
-  for(let elevation=-90; elevation< 90; elevation+= stepElevation)
+  for(let phi=0; phi < 360; phi+=stepPhi)
   {
     for(let angle = 0; angle < 360; angle+= stepAngle)
     {
-      vertexCoords.push(...createRectCoords(0,0,1,0,0,1));
+      vertexCoords.push(...createRectColor(0,0,1,0,0,1));
     }
   }
   
@@ -201,7 +200,16 @@ function startGL()
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoords), gl.STATIC_DRAW);
   vertexCoordsBuffer.itemSize = 2;
   vertexCoordsBuffer.numItems = vertexCoords.length/6;
-  
+ 
+
+
+vertexCoordsBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexCoordsBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoords), gl.STATIC_DRAW);
+  vertexCoordsBuffer.itemSize = 2;
+  vertexCoordsBuffer.numItems = vertexCoords.length/6;
+
+
   textureBuffer = gl.createTexture();
   var textureImg = new Image();
   textureImg.onload = function() { //Wykonanie kodu automatycznie po załadowaniu obrazka
@@ -211,7 +219,7 @@ function startGL()
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   }
-  textureImg.src="Tex.png"; //Nazwa obrazka
+  textureImg.src="donut.jpg"; //Nazwa obrazka
   
   //Macierze opisujące położenie wirtualnej kamery w przestrzenie 3D
   let aspect = gl.viewportWidth/gl.viewportHeight;
@@ -229,10 +237,10 @@ function startGL()
   Tick();
 } 
 //let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery
-var angleZ = 0.0;
-var angleY = 0.0;
-var angleX = 0.0;
-var tz = -5.0;
+var angleZ = 10.0;
+var angleY = -20.0;
+var angleX = -20.0;
+var tz = -45.0;
 function Tick()
 {  
   let uMVMatrix = [
@@ -314,12 +322,12 @@ function Tick()
 
 function handlekeydown(e)
 {
- if(e.keyCode==87) angleX=angleX+1.0; //W
- if(e.keyCode==83) angleX=angleX-1.0; //S
- if(e.keyCode==68) angleY=angleY+1.0;
- if(e.keyCode==65) angleY=angleY-1.0;
- if(e.keyCode==81) angleZ=angleZ+1.0;
- if(e.keyCode==69) angleZ=angleZ-1.0;
+  if(e.keyCode==87) angleX=angleX+0.5;   //W
+ if(e.keyCode==83) angleX=angleX-0.5;   //S
+ if(e.keyCode==68) angleY=angleY+0.5;   //D
+ if(e.keyCode==65) angleY=angleY-0.5;   //A
+ if(e.keyCode==81) angleZ=angleZ+0.5;   //Q
+ if(e.keyCode==69) angleZ=angleZ-0.5;   //E
  //alert(e.keyCode);
  //alert(angleX);
 }
@@ -327,6 +335,5 @@ function handlekeydown(e)
 </head>
 <body onload="startGL()" onkeydown="handlekeydown(event)">
 <canvas id="canvas3D" width="640" height="480" style="border: solid black 1px"></canvas>
-<img id="textureImg" src="Tex.png">
 </body>
 </html>
