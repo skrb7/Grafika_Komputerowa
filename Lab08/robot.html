@@ -339,6 +339,45 @@ var Object6Sizedy = 0.4;
 var Object6Sizedz = 0.1;
 
 
+//lewa rnoga
+var Object7PositionX = 0.3;
+var Object7PositionY = -1.2;
+var Object7PositionZ = 0.0;
+var Object7AngleZ = 0.0;
+
+var Object7Sizedx = 0.2;
+var Object7Sizedy = 0.6;
+var Object7Sizedz = 0.1;
+
+var Object8PositionX = 0.3;
+var Object8PositionY = -2.2;
+var Object8PositionZ = 0.0;
+var Object8AngleZ = 0.0;
+
+var Object8Sizedx = 0.2;
+var Object8Sizedy = 0.4;
+var Object8Sizedz = 0.1;
+
+
+//prawa rnoga
+var Object9PositionX = 1.3;
+var Object9PositionY = -1.2;
+var Object9PositionZ = 0.0;
+var Object9AngleZ = 0.0;
+
+var Object9Sizedx = 0.2;
+var Object9Sizedy = 0.6;
+var Object9Sizedz = 0.1;
+
+var Object10PositionX = 1.3;
+var Object10PositionY = -2.2;
+var Object10PositionZ = 0.0;
+var Object10AngleZ = 0.0;
+
+var Object10Sizedx = 0.2;
+var Object10Sizedy = 0.4;
+var Object10Sizedz = 0.1;
+
 
 
 var LightSize = 0.0;
@@ -355,6 +394,10 @@ function Tick()
   let uMMatrix4 = CreateIdentytyMatrix();
   let uMMatrix5 = CreateIdentytyMatrix();
   let uMMatrix6 = CreateIdentytyMatrix();
+  let uMMatrix7 = CreateIdentytyMatrix();
+  let uMMatrix8 = CreateIdentytyMatrix();
+  let uMMatrix9 = CreateIdentytyMatrix();
+  let uMMatrix10 = CreateIdentytyMatrix();
   
   let uVMatrix = CreateIdentytyMatrix();
   
@@ -414,7 +457,28 @@ function Tick()
   uMMatrix6 = MatrixMul(uMMatrix6,CreateTranslationMatrix(Object6Sizedx,0.0,0.0)); 
   uMMatrix6 = MatrixMul(uMMatrix6,CreateRotationZMatrix(Object6AngleZ));
   uMMatrix6 = MatrixMul(uMMatrix6,CreateTranslationMatrix(Object6PositionX,Object6PositionY,Object6PositionZ));
+
+  uMMatrix7 = MatrixMul(uMMatrix7,CreateScaleMatrix(Object7Sizedx,Object7Sizedy,Object7Sizedz));
+  uMMatrix7 = MatrixMul(uMMatrix7,CreateTranslationMatrix(Object7Sizedx,0.0,0.0)); 
+  uMMatrix7 = MatrixMul(uMMatrix7,CreateRotationZMatrix(Object7AngleZ));
+  uMMatrix7 = MatrixMul(uMMatrix7,CreateTranslationMatrix(Object7PositionX,Object7PositionY,Object7PositionZ));  
   
+  uMMatrix8 = MatrixMul(uMMatrix8,CreateScaleMatrix(Object8Sizedx,Object8Sizedy,Object8Sizedz));
+  uMMatrix8 = MatrixMul(uMMatrix8,CreateTranslationMatrix(Object8Sizedx,0.0,0.0)); 
+  uMMatrix8 = MatrixMul(uMMatrix8,CreateRotationZMatrix(Object8AngleZ));
+  uMMatrix8= MatrixMul(uMMatrix8,CreateTranslationMatrix(Object8PositionX,Object8PositionY,Object8PositionZ));
+  
+  uMMatrix9 = MatrixMul(uMMatrix9,CreateScaleMatrix(Object9Sizedx,Object9Sizedy,Object9Sizedz));
+  uMMatrix9 = MatrixMul(uMMatrix9,CreateTranslationMatrix(Object9Sizedx,0.0,0.0)); 
+  uMMatrix9 = MatrixMul(uMMatrix9,CreateRotationZMatrix(Object9AngleZ));
+  uMMatrix9 = MatrixMul(uMMatrix9,CreateTranslationMatrix(Object9PositionX,Object9PositionY,Object9PositionZ));  
+  
+  uMMatrix10 = MatrixMul(uMMatrix10,CreateScaleMatrix(Object10Sizedx,Object10Sizedy,Object10Sizedz));
+  uMMatrix10 = MatrixMul(uMMatrix10,CreateTranslationMatrix(Object10Sizedx,0.0,0.0)); 
+  uMMatrix10 = MatrixMul(uMMatrix10,CreateRotationZMatrix(Object10AngleZ));
+  uMMatrix10 = MatrixMul(uMMatrix10,CreateTranslationMatrix(Object10PositionX,Object10PositionY,Object10PositionZ));
+  
+
   uMMatrix0 = MatrixMul(uMMatrix0,CreateScaleMatrix(LightSize,LightSize,LightSize));
   uMMatrix0 = MatrixMul(uMMatrix0,CreateTranslationMatrix(LightPositionX,LightPositionY,LightPositionZ));
   
@@ -486,6 +550,30 @@ function Tick()
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix6)));
   gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),0.0,1.0,0.0);
   gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
+
+//7
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix7));
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix7)));
+  gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),0.5,0.0,0.0);  
+  gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
+  
+  //8 Obiekt
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix8));
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix8)));
+  gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),0.0,1.0,0.0);
+  gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
+
+    //9 Obiekt
+    gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix9));
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix9)));
+  gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),0.5,0.0,0.0);  
+  gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
+
+    //1O obiekt
+    gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix10));
+  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix10)));
+  gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),0.0,1.0,0.0);
+  gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
   
   //Obiekt Światła
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix0));
@@ -493,6 +581,9 @@ function Tick()
   gl.uniform3f(gl.getUniformLocation(shaderProgram, "uColor"),1.0,1.0,0.0);
   gl.uniform1f(gl.getUniformLocation(shaderProgram, "uNormalMul"),-1.0);  
   gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
+  
+
+
   
   setTimeout(Tick,100);
 }
